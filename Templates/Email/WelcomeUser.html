@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 30px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .header {
+        background-color: #4f46e5;
+        color: #ffffff;
+        padding: 30px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .body {
+        padding: 30px;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .body h2 {
+        color: #4f46e5;
+        margin-top: 0;
+      }
+      .info-box {
+        background-color: #f0f0ff;
+        border-left: 4px solid #4f46e5;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 4px 4px 0;
+      }
+      .info-box p {
+        margin: 5px 0;
+      }
+      .footer {
+        background-color: #f9fafb;
+        padding: 20px 30px;
+        text-align: center;
+        font-size: 12px;
+        color: #999999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Welcome to AI Dev Repository</h1>
+      </div>
+      <div class="body">
+        <h2>Hello {{FirstName}} {{LastName}},</h2>
+        <p>
+          Your account has been successfully created. We're excited to have you
+          on board!
+        </p>
+        <div class="info-box">
+          <p><strong>Email:</strong> {{Email}}</p>
+          <p><strong>Role:</strong> {{RoleName}}</p>
+        </div>
+        <p>
+          You can now log in using your email and the password you were
+          provided.
+        </p>
+        <p>
+          If you have any questions, feel free to reach out to our support team.
+        </p>
+        <p>Best regards,<br />AI Dev Repository Team</p>
+      </div>
+      <div class="footer">
+        <p>&copy; 2026 AI Dev Repository. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
