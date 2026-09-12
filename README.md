@@ -15,6 +15,10 @@
 
 `appsettings.json` contains placeholder values. Store real or machine-specific values in .NET user-secrets instead of committing them to the repository.
 
+### Local development
+
+Leave `KeyVault:VaultUri` empty locally and use .NET user-secrets for local credentials. The application will not connect to Azure Key Vault unless a vault URI is configured.
+
 From this project directory, run:
 
 ```bash
@@ -44,6 +48,38 @@ Use a strong JWT key in environments outside local development:
 ```bash
 dotnet user-secrets set "Jwt:Key" "your-at-least-32-character-secret"
 ```
+
+### Production with Azure Key Vault
+
+Set the Key Vault URI as an application setting or environment variable in the hosting environment. The double underscore maps to the nested configuration key:
+
+```text
+KeyVault__VaultUri=https://your-vault-name.vault.azure.net/
+```
+
+The API uses `DefaultAzureCredential`, so production should use a managed identity or another Azure-supported workload identity. Grant that identity permission to read secrets from the vault, preferably with the Azure RBAC **Key Vault Secrets User** role.
+
+Store configuration values in Key Vault using double dashes in place of configuration colons:
+
+| Key Vault secret | Configuration key |
+| --- | --- |
+| `ConnectionStrings--DefaultConnection` | `ConnectionStrings:DefaultConnection` |
+| `Jwt--Key` | `Jwt:Key` |
+| `Jwt--Issuer` | `Jwt:Issuer` |
+| `Jwt--Audience` | `Jwt:Audience` |
+| `Smtp--Host` | `Smtp:Host` |
+| `Smtp--Port` | `Smtp:Port` |
+| `Smtp--Username` | `Smtp:Username` |
+| `Smtp--Password` | `Smtp:Password` |
+| `Smtp--FromEmail` | `Smtp:FromEmail` |
+| `Smtp--FromName` | `Smtp:FromName` |
+| `AzureDevOps--Organization` | `AzureDevOps:Organization` |
+| `AzureDevOps--Project` | `AzureDevOps:Project` |
+| `AzureDevOps--Pat` | `AzureDevOps:Pat` |
+| `Claude--ApiKey` | `Claude:ApiKey` |
+| `Claude--Model` | `Claude:Model` |
+
+Key Vault values override values from `appsettings.json` because the Key Vault provider is added after the default configuration providers. Do not store `KeyVault:VaultUri` itself as a Key Vault secret; provide it through the hosting environment before application startup.
 
 ## Database setup
 
