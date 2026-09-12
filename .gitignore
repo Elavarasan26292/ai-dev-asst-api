@@ -1,0 +1,29 @@
+# Build output
+bin/
+obj/
+publish/
+*.binlog
+msbuild.log
+TestResults/
+
+# User-specific / local IDE state
+*.user
+*.userosscache
+*.userprefs
+*.suo
+.vs/
+.idea/
+*.DotSettings.user
+PublishProfiles/*.user
+*.publishsettings
+
+# Secrets — real values live in dotnet user-secrets (outside the repo).
+# appsettings.json is tracked on purpose: it holds placeholders only.
+secrets.json
+.env
+.env.*
+*.pfx
+*.p12
+
+# macOS
+.DS_Store
