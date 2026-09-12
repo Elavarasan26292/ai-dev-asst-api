@@ -61,23 +61,23 @@ The API uses `DefaultAzureCredential`, so production should use a managed identi
 
 Store configuration values in Key Vault using double dashes in place of configuration colons:
 
-| Key Vault secret | Configuration key |
-| --- | --- |
+| Key Vault secret                       | Configuration key                     |
+| -------------------------------------- | ------------------------------------- |
 | `ConnectionStrings--DefaultConnection` | `ConnectionStrings:DefaultConnection` |
-| `Jwt--Key` | `Jwt:Key` |
-| `Jwt--Issuer` | `Jwt:Issuer` |
-| `Jwt--Audience` | `Jwt:Audience` |
-| `Smtp--Host` | `Smtp:Host` |
-| `Smtp--Port` | `Smtp:Port` |
-| `Smtp--Username` | `Smtp:Username` |
-| `Smtp--Password` | `Smtp:Password` |
-| `Smtp--FromEmail` | `Smtp:FromEmail` |
-| `Smtp--FromName` | `Smtp:FromName` |
-| `AzureDevOps--Organization` | `AzureDevOps:Organization` |
-| `AzureDevOps--Project` | `AzureDevOps:Project` |
-| `AzureDevOps--Pat` | `AzureDevOps:Pat` |
-| `Claude--ApiKey` | `Claude:ApiKey` |
-| `Claude--Model` | `Claude:Model` |
+| `Jwt--Key`                             | `Jwt:Key`                             |
+| `Jwt--Issuer`                          | `Jwt:Issuer`                          |
+| `Jwt--Audience`                        | `Jwt:Audience`                        |
+| `Smtp--Host`                           | `Smtp:Host`                           |
+| `Smtp--Port`                           | `Smtp:Port`                           |
+| `Smtp--Username`                       | `Smtp:Username`                       |
+| `Smtp--Password`                       | `Smtp:Password`                       |
+| `Smtp--FromEmail`                      | `Smtp:FromEmail`                      |
+| `Smtp--FromName`                       | `Smtp:FromName`                       |
+| `AzureDevOps--Organization`            | `AzureDevOps:Organization`            |
+| `AzureDevOps--Project`                 | `AzureDevOps:Project`                 |
+| `AzureDevOps--Pat`                     | `AzureDevOps:Pat`                     |
+| `Claude--ApiKey`                       | `Claude:ApiKey`                       |
+| `Claude--Model`                        | `Claude:Model`                        |
 
 Key Vault values override values from `appsettings.json` because the Key Vault provider is added after the default configuration providers. Do not store `KeyVault:VaultUri` itself as a Key Vault secret; provide it through the hosting environment before application startup.
 
