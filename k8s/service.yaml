@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-dev-asst-api
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: ai-dev-asst-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

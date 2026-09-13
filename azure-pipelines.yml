@@ -8,6 +8,11 @@ variables:
   dotnetVersion: "8.0.x"
   projectFile: "ai-dev-asst-api.csproj"
   dockerRegistryServiceConnection: "devasst-acr-connection"
+  azureSubscriptionServiceConnection: "devasst-aks-connection"
+  azureResourceGroup: "VisualStudioOnline-C40A3787E31A48EEBA3DE3DDB8EF0511"
+  kubernetesCluster: "devasst-aks"
+  keyVaultUri: "https://appsecrt.vault.azure.net/"
+  managedIdentityClientId: "538e6821-84f7-44a5-b6db-608f2eb3dc2b"
   imageRepository: "ai-dev-asst-api"
   imageTag: "$(Build.BuildId)"
 
@@ -50,3 +55,38 @@ steps:
       tags: |
         $(imageTag)
         latest
+
+  - bash: |
+      set -euo pipefail
+
+      if [[ "$(keyVaultUri)" == *REPLACE_WITH_* || "$(managedIdentityClientId)" == *REPLACE_WITH_* ]]; then
+        echo "Set keyVaultUri and managedIdentityClientId in the pipeline variables before deployment."
+        exit 1
+      fi
+
+      export IMAGE_TAG="$(imageTag)"
+      export KEY_VAULT_URI="$(keyVaultUri)"
+      export MANAGED_IDENTITY_CLIENT_ID="$(managedIdentityClientId)"
+      mkdir -p "$(Build.ArtifactStagingDirectory)/k8s"
+
+      for manifest in service-account.yaml deployment.yaml service.yaml; do
+        envsubst '${IMAGE_TAG} ${KEY_VAULT_URI} ${MANAGED_IDENTITY_CLIENT_ID}' \
+          < "$(Build.SourcesDirectory)/k8s/${manifest}" \
+          > "$(Build.ArtifactStagingDirectory)/k8s/${manifest}"
+      done
+    displayName: Render Kubernetes manifests
+
+  - task: KubernetesManifest@1
+    displayName: Deploy API to AKS
+    inputs:
+      action: deploy
+      azureSubscriptionConnection: $(azureSubscriptionServiceConnection)
+      azureResourceGroup: $(azureResourceGroup)
+      kubernetesCluster: $(kubernetesCluster)
+      namespace: default
+      manifests: |
+        $(Build.ArtifactStagingDirectory)/k8s/service-account.yaml
+        $(Build.ArtifactStagingDirectory)/k8s/deployment.yaml
+        $(Build.ArtifactStagingDirectory)/k8s/service.yaml
+      containers: |
+        devasst.azurecr.io/$(imageRepository):$(imageTag)

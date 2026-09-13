@@ -55,8 +55,12 @@ The pipeline flow is:
 4. Run the available .NET tests.
 5. Build the production Docker image using the repository Dockerfile.
 6. Push immutable build-number and `latest` tags to `devasst.azurecr.io`.
+7. Render the Kubernetes manifests with the build image tag, Key Vault URI, and workload identity client ID.
+8. Deploy the service account, API Deployment, and LoadBalancer Service to `devasst-aks`.
 
 The ACR authentication is held in an Azure DevOps service connection. No database connection strings, Key Vault values, or provider credentials are passed to the Docker build. Runtime secrets are provided after deployment through Azure Key Vault and AKS workload identity.
+
+The Kubernetes service account is federated to the user-assigned managed identity. The Deployment enables the Azure workload identity label and supplies only `KeyVault__VaultUri`; the application obtains the actual secrets through `DefaultAzureCredential` at runtime.
 
 ## Startup Flow
 

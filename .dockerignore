@@ -15,3 +15,5 @@ secrets.json
 Dockerfile*
 *.binlog
 msbuild.log
+k8s/
+azure-pipelines.yml

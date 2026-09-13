@@ -122,6 +122,13 @@ devasst.azurecr.io/ai-dev-asst-api:latest
 
 The pipeline does not contain database credentials or Key Vault secrets. Those values are loaded by the deployed application at runtime.
 
+The pipeline also deploys the rendered Kubernetes manifests to AKS. Before running it, replace these variables in `azure-pipelines.yml`:
+
+- `keyVaultUri`: the Azure Key Vault URI
+- `managedIdentityClientId`: the Application ID of the user-assigned managed identity connected to the AKS federated credential
+
+The AKS service connection must be named `devasst-aks-connection` unless the pipeline variable is changed.
+
 ## Default login
 
 The initial migration seeds an Admin user:
