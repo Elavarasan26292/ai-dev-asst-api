@@ -109,6 +109,19 @@ The API runs at:
 
 The development URL is configured in `Properties/launchSettings.json`.
 
+## Azure DevOps container pipeline
+
+`azure-pipelines.yml` is manual-only. It runs when you select **Run pipeline** in Azure DevOps. It installs .NET 8, restores dependencies, builds the API, runs tests, builds the Docker image, and pushes it to Azure Container Registry.
+
+Before running the pipeline, create an Azure DevOps Docker Registry service connection for the ACR registry and replace the `dockerRegistryServiceConnection` value in `azure-pipelines.yml` with that service connection name. The image is pushed as:
+
+```text
+devasst.azurecr.io/ai-dev-asst-api:<Build.BuildId>
+devasst.azurecr.io/ai-dev-asst-api:latest
+```
+
+The pipeline does not contain database credentials or Key Vault secrets. Those values are loaded by the deployed application at runtime.
+
 ## Default login
 
 The initial migration seeds an Admin user:

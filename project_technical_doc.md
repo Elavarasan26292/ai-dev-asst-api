@@ -43,6 +43,21 @@ The API runs independently from the React client.
 
 The client calls the API over HTTP. The API never depends on client UI state and must validate authentication and authorization independently for every protected request.
 
+## CI/CD Flow
+
+Azure DevOps uses `azure-pipelines.yml` to build the API container from the Git repository. Automatic push and pull-request triggers are disabled; an operator starts the pipeline explicitly from Azure DevOps.
+
+The pipeline flow is:
+
+1. Install the .NET 8 SDK.
+2. Restore NuGet dependencies.
+3. Build the API in Release configuration.
+4. Run the available .NET tests.
+5. Build the production Docker image using the repository Dockerfile.
+6. Push immutable build-number and `latest` tags to `devasst.azurecr.io`.
+
+The ACR authentication is held in an Azure DevOps service connection. No database connection strings, Key Vault values, or provider credentials are passed to the Docker build. Runtime secrets are provided after deployment through Azure Key Vault and AKS workload identity.
+
 ## Startup Flow
 
 1. Application configuration is loaded from appsettings files, environment variables, and .NET user-secrets.
