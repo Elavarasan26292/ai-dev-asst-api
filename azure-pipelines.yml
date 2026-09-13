@@ -1,0 +1,52 @@
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  dotnetVersion: "8.0.x"
+  projectFile: "ai-dev-asst-api.csproj"
+  dockerRegistryServiceConnection: "devasst-acr-connection"
+  imageRepository: "ai-dev-asst-api"
+  imageTag: "$(Build.BuildId)"
+
+steps:
+  - task: UseDotNet@2
+    displayName: Install .NET SDK 8
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+
+  - task: DotNetCoreCLI@2
+    displayName: Restore dependencies
+    inputs:
+      command: restore
+      projects: $(projectFile)
+
+  - task: DotNetCoreCLI@2
+    displayName: Build API
+    inputs:
+      command: build
+      projects: $(projectFile)
+      arguments: "--configuration Release --no-restore"
+
+  - task: DotNetCoreCLI@2
+    displayName: Run tests
+    inputs:
+      command: test
+      projects: $(projectFile)
+      arguments: "--configuration Release --no-build --no-restore"
+      publishTestResults: true
+
+  - task: Docker@2
+    displayName: Build and push API image
+    inputs:
+      command: buildAndPush
+      containerRegistry: $(dockerRegistryServiceConnection)
+      repository: $(imageRepository)
+      Dockerfile: "$(Build.SourcesDirectory)/Dockerfile"
+      buildContext: "$(Build.SourcesDirectory)"
+      tags: |
+        $(imageTag)
+        latest

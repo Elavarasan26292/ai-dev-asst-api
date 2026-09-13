@@ -1,4 +1,5 @@
 using System.Text;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +14,17 @@ using ai_dev_asst_api.Middleware;
 using ai_dev_asst_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Key Vault is enabled only when a vault URI is configured. Local development
+// continues to use appsettings and .NET user-secrets.
+var keyVaultUri = builder.Configuration["KeyVault:VaultUri"];
+if (!string.IsNullOrWhiteSpace(keyVaultUri))
+{
+    if (!Uri.TryCreate(keyVaultUri, UriKind.Absolute, out var keyVaultEndpoint))
+        throw new InvalidOperationException("KeyVault:VaultUri must be a valid absolute URI.");
+
+    builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+}
 
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

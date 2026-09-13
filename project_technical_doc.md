@@ -43,15 +43,31 @@ The API runs independently from the React client.
 
 The client calls the API over HTTP. The API never depends on client UI state and must validate authentication and authorization independently for every protected request.
 
+## CI/CD Flow
+
+Azure DevOps uses `azure-pipelines.yml` to build the API container from the Git repository. Automatic push and pull-request triggers are disabled; an operator starts the pipeline explicitly from Azure DevOps.
+
+The pipeline flow is:
+
+1. Install the .NET 8 SDK.
+2. Restore NuGet dependencies.
+3. Build the API in Release configuration.
+4. Run the available .NET tests.
+5. Build the production Docker image using the repository Dockerfile.
+6. Push immutable build-number and `latest` tags to `devasst.azurecr.io`.
+
+The ACR authentication is held in an Azure DevOps service connection. No database connection strings, Key Vault values, or provider credentials are passed to the Docker build. Runtime secrets are provided after deployment through Azure Key Vault and AKS workload identity.
+
 ## Startup Flow
 
 1. Application configuration is loaded from appsettings files, environment variables, and .NET user-secrets.
-2. The MySQL database context is registered using the configured connection string.
-3. JWT authentication and authorization services are registered.
-4. Application services and external providers are registered through dependency injection.
-5. CORS, controllers, exception handling, authentication, authorization, and Swagger are configured.
-6. Requests are routed to controllers.
-7. Swagger is exposed only in the Development environment.
+2. When a Key Vault URI is configured, Azure Key Vault is added as a higher-priority configuration provider using `DefaultAzureCredential`.
+3. The MySQL database context is registered using the configured connection string.
+4. JWT authentication and authorization services are registered.
+5. Application services and external providers are registered through dependency injection.
+6. CORS, controllers, exception handling, authentication, authorization, and Swagger are configured.
+7. Requests are routed to controllers.
+8. Swagger is exposed only in the Development environment.
 
 The application does not automatically apply migrations during startup. Database migrations must be applied separately before running against a new database.
 
@@ -116,7 +132,15 @@ Integration abstractions isolate external providers from application services.
 - AI provider abstraction sends analysis prompts to Claude and receives structured analysis results.
 - Email integration sends notification messages through SMTP.
 
-Provider credentials must come from configuration or user-secrets, never from source code.
+Provider credentials must come from configuration, .NET user-secrets, or Azure Key Vault, never from source code.
+
+## Configuration and Secrets
+
+Local development uses `appsettings.json` plus .NET user-secrets. Production can set `KeyVault__VaultUri` to enable Azure Key Vault. The application uses `DefaultAzureCredential`, which supports managed identity in Azure hosting environments and developer credentials when explicitly used outside production.
+
+Key Vault secret names use `--` for nested configuration sections. For example, `Jwt--Key` supplies `Jwt:Key`, and `ConnectionStrings--DefaultConnection` supplies the database connection string. Key Vault is loaded after the normal configuration providers, so its values override local defaults.
+
+The production hosting identity must be granted permission to read secrets from the vault. The preferred Azure RBAC role is **Key Vault Secrets User**. The vault URI is supplied by the hosting environment and is not stored as a secret inside the vault.
 
 ### Agents
 
@@ -209,3 +233,4 @@ Never solve a client display issue by weakening API authorization. Never place d
 - JWT permissions remain unchanged until a token is renewed.
 - The API and client use configured local URLs and require matching CORS settings.
 - Swagger is intended for development use.
+- Production secret loading requires an Azure Key Vault URI and an Azure identity with permission to read secrets.
