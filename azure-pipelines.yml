@@ -7,7 +7,7 @@ pool:
 variables:
   dotnetVersion: "8.0.x"
   projectFile: "ai-dev-asst-api.csproj"
-  dockerRegistryServiceConnection: "REPLACE_WITH_ACR_SERVICE_CONNECTION_NAME"
+  dockerRegistryServiceConnection: "devasst-acr-connection"
   imageRepository: "ai-dev-asst-api"
   imageTag: "$(Build.BuildId)"
 
