@@ -80,6 +80,7 @@ steps:
     displayName: Deploy API to AKS
     inputs:
       action: deploy
+      connectionType: azureResourceManager
       azureSubscriptionConnection: $(azureSubscriptionServiceConnection)
       azureResourceGroup: $(azureResourceGroup)
       kubernetesCluster: $(kubernetesCluster)
