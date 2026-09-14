@@ -74,7 +74,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClient", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        var clientOrigins = (builder.Configuration["Cors:ClientOrigins"]
+                ?? builder.Configuration["Cors:ClientOrigin"]
+                ?? "http://localhost:5173")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        policy.WithOrigins(clientOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

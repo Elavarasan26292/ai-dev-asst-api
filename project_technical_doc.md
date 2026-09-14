@@ -40,8 +40,11 @@ The API runs independently from the React client.
 - Swagger UI: http://localhost:5259/swagger
 - API route prefix: /api
 - Development client origin allowed by CORS: http://localhost:5173
+- Deployed client origin allowed by CORS: http://ai-dev-asst-client.southindia.cloudapp.azure.com
 
 The client calls the API over HTTP. The API never depends on client UI state and must validate authentication and authorization independently for every protected request.
+
+CORS origins are configured as a comma-separated `Cors:ClientOrigins` value. The deployed API includes both the local development origin and the deployed client hostname.
 
 ## CI/CD Flow
 

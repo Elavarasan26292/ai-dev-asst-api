@@ -60,7 +60,7 @@ steps:
       set -euo pipefail
 
       if [[ "$(keyVaultUri)" == *REPLACE_WITH_* || "$(managedIdentityClientId)" == *REPLACE_WITH_* ]]; then
-        echo "Set keyVaultUri and managedIdentityClientId in the pipeline variables before deployment."
+        echo "Set keyVaultUri and managedIdentityClientId before deployment."
         exit 1
       fi
 
