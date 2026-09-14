@@ -30,7 +30,7 @@ spec:
             - name: KeyVault__VaultUri
               value: "${KEY_VAULT_URI}"
             - name: Cors__ClientOrigins
-              value: "http://localhost:5173,http://ai-dev-asst-client.southindia.cloudapp.azure.com"
+              value: "http://localhost:5173,https://ai-dev-asst-client.southindia.cloudapp.azure.com"
           readinessProbe:
             tcpSocket:
               port: http

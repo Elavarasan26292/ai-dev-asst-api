@@ -4,7 +4,7 @@ metadata:
   name: ai-dev-asst-api
   namespace: default
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: ai-dev-asst-api
   ports:
